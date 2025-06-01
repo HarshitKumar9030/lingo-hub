@@ -27,7 +27,7 @@ export interface GeneratedStoryData {
 }
 
 class AIContentService {
-  private model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  private model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
   async generateStory(params: GenerateStoryParams): Promise<GeneratedStoryData> {
     const prompt = this.buildStoryPrompt(params);
@@ -37,7 +37,7 @@ class AIContentService {
       const response = result.response;
       const text = response.text();
       
-      // Parse the JSON response
+      
       const storyData = JSON.parse(text);
       
       // Add IDs to scenes and quiz questions

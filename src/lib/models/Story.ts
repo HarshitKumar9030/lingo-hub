@@ -22,7 +22,7 @@ export interface ISceneVocabulary {
 // Scene interface
 export interface IScene {
   id: string;
-  content: string; // German text
+  content: string; // German text for now
   translation: string; // English translation
   emoji?: string;
   choices: IChoice[];
