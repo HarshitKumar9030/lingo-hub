@@ -15,11 +15,13 @@ import {
   Users, 
   Sparkles,
   Home,
-  Info
+  Info,
+  BarChart3
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Home', href: '/', icon: Home },
+  { name: 'Dashboard', href: '/dashboard', icon: BarChart3, requiresAuth: true },
   { name: 'Stories', href: '/stories', icon: BookOpen },
   { name: 'Learn', href: '/learn', icon: Brain },
   { name: 'Community', href: '/community', icon: Users },
@@ -29,7 +31,12 @@ const navigation = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { data: session, status } = useSession();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,6 +46,9 @@ export function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Filter navigation items based on authentication status
+  const filteredNavigation = mounted ? navigation.filter(item => !item.requiresAuth || session) : navigation.filter(item => !item.requiresAuth);
 
   return (    <motion.nav
       initial={{ y: -100, opacity: 0 }}
@@ -65,17 +75,15 @@ export function Navbar() {
                 LingoHub
               </span>
             </Link>
-          </motion.div>
-
-          {/* Desktop Navigation */}
+          </motion.div>          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
-            {navigation.map((item, index) => (
+            {filteredNavigation.map((item, index) => (
               <motion.div
                 key={item.name}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 + 0.2 }}
-              >                <Link href={item.href}>
+              ><Link href={item.href}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -145,9 +153,10 @@ export function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
             className="md:hidden backdrop-blur-xl bg-[#fafafa]/95 dark:bg-[#0a0a0a]/95 border-t border-[#e5e5e5] dark:border-[#1a1a1a]"
-          >
-            <div className="px-4 py-6 space-y-3">
-              {navigation.map((item, index) => (
+          >            <div className="px-4 py-6 space-y-3">
+              {navigation
+                .filter(item => !item.requiresAuth || session)
+                .map((item, index) => (
                 <motion.div
                   key={item.name}
                   initial={{ opacity: 0, x: -20 }}
