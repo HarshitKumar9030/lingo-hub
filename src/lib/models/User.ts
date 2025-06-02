@@ -30,6 +30,10 @@ export interface IUser extends Document {
   email: string;
   name: string;
   hashedPassword: string;
+  avatar?: {
+    url: string;
+    publicId: string;
+  };
   nativeLanguage: string;
   targetLanguage: string;
   progress: IUserProgress;
@@ -49,6 +53,10 @@ const UserSchema = new Schema<IUser>({
   email: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   hashedPassword: { type: String, required: true },
+  avatar: {
+    url: { type: String },
+    publicId: { type: String }
+  },
   nativeLanguage: { type: String, default: 'en' },
   targetLanguage: { type: String, default: 'de' },
   progress: {
