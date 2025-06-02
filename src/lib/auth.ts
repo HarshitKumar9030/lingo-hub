@@ -80,11 +80,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         };
       },
     },
-  ],
-  callbacks: {
-    async session({ session, user }) {
-      if (session.user && user) {
-        session.user.id = user.id;
+  ],  callbacks: {
+    async session({ session, token }) {
+      if (session.user && token) {
+        session.user.id = token.id as string;
       }
       return session;
     },
@@ -100,6 +99,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     error: "/auth/error",
   },
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
 });
