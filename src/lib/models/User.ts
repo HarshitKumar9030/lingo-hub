@@ -20,8 +20,18 @@ export interface IUserProgress {
   wordsLearned: number;
   totalQuizScore: number;
   currentLevel: number;
+  totalXP: number;
   streakDays: number;
   lastLoginDate: Date;
+  achievements: string[];
+  dailyGoal: number;
+  dailyProgress: number;
+  weeklyStats: {
+    storiesCompleted: number;
+    wordsLearned: number;
+    xpEarned: number;
+    startDate: Date;
+  };
 }
 
 // User interface
@@ -58,15 +68,24 @@ const UserSchema = new Schema<IUser>({
     publicId: { type: String }
   },
   nativeLanguage: { type: String, default: 'en' },
-  targetLanguage: { type: String, default: 'de' },
-  progress: {
+  targetLanguage: { type: String, default: 'de' },  progress: {
     scenesCompleted: [{ type: String }],
     storiesCompleted: [{ type: String }],
     wordsLearned: { type: Number, default: 0 },
     totalQuizScore: { type: Number, default: 0 },
     currentLevel: { type: Number, default: 1 },
+    totalXP: { type: Number, default: 0 },
     streakDays: { type: Number, default: 0 },
-    lastLoginDate: { type: Date, default: Date.now }
+    lastLoginDate: { type: Date, default: Date.now },
+    achievements: [{ type: String }],
+    dailyGoal: { type: Number, default: 50 }, // Daily XP goal
+    dailyProgress: { type: Number, default: 0 },
+    weeklyStats: {
+      storiesCompleted: { type: Number, default: 0 },
+      wordsLearned: { type: Number, default: 0 },
+      xpEarned: { type: Number, default: 0 },
+      startDate: { type: Date, default: Date.now }
+    }
   },
   vocabulary: [{
     word: { type: String, required: true },
