@@ -24,8 +24,7 @@ import {
   Volume2,
   BarChart3,
   ChevronDown,
-  Check,
-  Languages
+  Check
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -235,27 +234,27 @@ export default function Dashboard() {
   const vocabularyNeedingReview = userProfile.vocabulary.filter(v => v.needsReview).length;
   const totalXP = userProfile.progress.totalQuizScore;
   const levelProgress = ((totalXP % 1000) / 1000) * 100; // Each level requires 1000 XP
-
   return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <div className="max-w-7xl mx-auto px-4 py-8">        {/* Header */}
+    <div className="min-h-screen mt-16 bg-background">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-[#1a1a1a] mb-2">
+              <h1 className="text-3xl font-bold text-foreground mb-2">
                 Welcome back, {userProfile.name}! 👋
               </h1>
-              <p className="text-[#888]">
+              <p className="text-muted-foreground">
                 Continue your {userProfile.targetLanguage.toUpperCase()} learning journey
               </p>
             </div>
             <div className="flex items-center gap-3">
               {getStreakIcon(userProfile.progress.streakDays)}
               <div className="text-right">
-                <div className="text-xl font-bold text-[#1a1a1a]">
+                <div className="text-xl font-bold text-foreground">
                   {userProfile.progress.streakDays}
                 </div>
-                <div className="text-sm text-[#888]">day streak</div>
+                <div className="text-sm text-muted-foreground">day streak</div>
               </div>
             </div>
           </div>
@@ -263,48 +262,49 @@ export default function Dashboard() {
 
         {/* Language Selector */}
         <div className="mb-8">
-          <Card className="border-[#e5e5e5] bg-white">
+          <Card className="border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-[#1a1a1a] mb-1">Learning Language</h3>
-                  <p className="text-sm text-[#888]">Switch between languages to track progress separately</p>
-                </div>                <div className="relative language-selector">
+                  <h3 className="text-lg font-semibold text-foreground mb-1">Learning Language</h3>
+                  <p className="text-sm text-muted-foreground">Switch between languages to track progress separately</p>
+                </div>
+                <div className="relative language-selector">
                   <Button
                     variant="outline"
-                    className="flex items-center gap-3 min-w-[200px] justify-between border-[#e5e5e5] hover:bg-gray-50"
+                    className="flex items-center gap-3 min-w-[200px] justify-between border-border hover:bg-muted"
                     onClick={() => setShowLanguageSelector(!showLanguageSelector)}
                     disabled={isChangingLanguage}
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-xl">{getCurrentLanguage()?.emoji}</span>
-                      <span className="font-medium text-[#1a1a1a]">
+                      <span className="font-medium text-foreground">
                         {getCurrentLanguage()?.name}
                       </span>
                     </div>
                     {isChangingLanguage ? (
-                      <div className="w-4 h-4 border-2 border-[#1a1a1a] border-t-transparent rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-foreground border-t-transparent rounded-full animate-spin" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-[#888]" />
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
                     )}
                   </Button>
 
                   {showLanguageSelector && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#e5e5e5] rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
                       {availableLanguages.map((language) => (
                         <button
                           key={language.code}
-                          className="w-full flex items-center justify-between p-3 text-left hover:bg-gray-50 transition-colors first:rounded-t-lg last:rounded-b-lg"
+                          className="w-full flex items-center justify-between p-3 text-left hover:bg-muted transition-colors first:rounded-t-lg last:rounded-b-lg"
                           onClick={() => handleLanguageChange(language.code)}
                         >
                           <div className="flex items-center gap-3">
                             <span className="text-xl">{language.emoji}</span>
-                            <span className="font-medium text-[#1a1a1a]">
+                            <span className="font-medium text-foreground">
                               {language.name}
                             </span>
                           </div>
                           {selectedLanguage === language.code && (
-                            <Check className="w-4 h-4 text-blue-600" />
+                            <Check className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                           )}
                         </button>
                       ))}
@@ -318,45 +318,45 @@ export default function Dashboard() {
 
         {/* Quick Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="border-[#e5e5e5] bg-white">
+          <Card className="border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#888]">Current Level</p>
-                  <p className="text-2xl font-bold text-[#1a1a1a]">
+                  <p className="text-sm font-medium text-muted-foreground">Current Level</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {userProfile.progress.currentLevel}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
               <div className="mt-4">
                 <div className="flex items-center justify-between text-sm mb-1">
-                  <span className="text-[#888]">Progress to Level {userProfile.progress.currentLevel + 1}</span>
-                  <span className="text-[#888]">{Math.round(levelProgress)}%</span>
+                  <span className="text-muted-foreground">Progress to Level {userProfile.progress.currentLevel + 1}</span>
+                  <span className="text-muted-foreground">{Math.round(levelProgress)}%</span>
                 </div>
                 <Progress value={levelProgress} className="h-2" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-[#e5e5e5] bg-white">
+          <Card className="border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#888]">Words Learned</p>
-                  <p className="text-2xl font-bold text-[#1a1a1a]">
+                  <p className="text-sm font-medium text-muted-foreground">Words Learned</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {userProfile.progress.wordsLearned}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
               </div>
               {vocabularyNeedingReview > 0 && (
                 <div className="mt-4">
-                  <Badge variant="outline" className="text-orange-600 border-orange-200">
+                  <Badge variant="outline" className="text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800">
                     {vocabularyNeedingReview} need review
                   </Badge>
                 </div>
@@ -364,47 +364,45 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="border-[#e5e5e5] bg-white">
+          <Card className="border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#888]">Stories Completed</p>
-                  <p className="text-2xl font-bold text-[#1a1a1a]">
+                  <p className="text-sm font-medium text-muted-foreground">Stories Completed</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {userProfile.progress.storiesCompleted.length}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                  <BookOpen className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-[#e5e5e5] bg-white">
+          <Card className="border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#888]">Total XP</p>
-                  <p className="text-2xl font-bold text-[#1a1a1a]">
+                  <p className="text-sm font-medium text-muted-foreground">Total XP</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {totalXP.toLocaleString()}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <Star className="w-6 h-6 text-yellow-600" />
+                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center">
+                  <Star className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        </div>        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Quick Actions */}
-            <Card className="border-[#e5e5e5] bg-white">
+            <Card className="border">
               <CardHeader>
-                <CardTitle className="text-[#1a1a1a]">Quick Actions</CardTitle>
-                <CardDescription className="text-[#888]">
+                <CardTitle className="text-foreground">Quick Actions</CardTitle>
+                <CardDescription className="text-muted-foreground">
                   Jump back into your learning
                 </CardDescription>
               </CardHeader>
@@ -412,7 +410,7 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <Button 
                     asChild 
-                    className="h-20 flex-col gap-2 bg-blue-600 hover:bg-blue-700"
+                    className="h-20 flex-col gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
                   >
                     <Link href="/stories">
                       <Play className="w-6 h-6" />
@@ -424,7 +422,7 @@ export default function Dashboard() {
                     <Button 
                       asChild 
                       variant="outline" 
-                      className="h-20 flex-col gap-2 border-orange-200 text-orange-600 hover:bg-orange-50"
+                      className="h-20 flex-col gap-2 border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20"
                     >
                       <Link href="/vocabulary/review">
                         <Volume2 className="w-6 h-6" />
@@ -436,7 +434,7 @@ export default function Dashboard() {
                   <Button 
                     asChild 
                     variant="outline" 
-                    className="h-20 flex-col gap-2 border-[#e5e5e5] hover:bg-gray-50"
+                    className="h-20 flex-col gap-2 border-border hover:bg-muted"
                   >
                     <Link href="/profile">
                       <BarChart3 className="w-6 h-6" />
@@ -448,11 +446,11 @@ export default function Dashboard() {
             </Card>
 
             {/* Recommended Stories */}
-            <Card className="border-[#e5e5e5] bg-white">
+            <Card className="border">
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle className="text-[#1a1a1a]">Recommended Stories</CardTitle>
-                  <CardDescription className="text-[#888]">
+                  <CardTitle className="text-foreground">Recommended Stories</CardTitle>
+                  <CardDescription className="text-muted-foreground">
                     Perfect for your current level
                   </CardDescription>
                 </div>
@@ -469,16 +467,16 @@ export default function Dashboard() {
                     {stories.slice(0, 4).map((story) => (
                       <div
                         key={story._id}
-                        className="p-4 border border-[#e5e5e5] rounded-lg hover:shadow-md transition-shadow cursor-pointer group"
+                        className="p-4 border border-border rounded-lg hover:shadow-md dark:hover:shadow-lg transition-shadow cursor-pointer group"
                       >
                         <Link href={`/stories/${story._id}`}>
                           <div className="flex items-start gap-3">
                             <span className="text-2xl">{story.emoji}</span>
                             <div className="flex-1 min-w-0">
-                              <h3 className="font-semibold text-[#1a1a1a] group-hover:text-blue-600 transition-colors line-clamp-1">
+                              <h3 className="font-semibold text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
                                 {story.title}
                               </h3>
-                              <p className="text-sm text-[#888] line-clamp-2 mt-1">
+                              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
                                 {story.description}
                               </p>
                               <div className="flex items-center gap-2 mt-3">
@@ -488,7 +486,7 @@ export default function Dashboard() {
                                 >
                                   {getDifficultyLabel(story.difficulty)}
                                 </Badge>
-                                <div className="flex items-center gap-1 text-xs text-[#888]">
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                   <Clock className="w-3 h-3" />
                                   {story.estimatedTime}m
                                 </div>
@@ -501,8 +499,8 @@ export default function Dashboard() {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <BookOpen className="w-12 h-12 text-[#888] mx-auto mb-4" />
-                    <p className="text-[#888] mb-4">No stories available at the moment</p>
+                    <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground mb-4">No stories available at the moment</p>
                     <Button asChild variant="outline">
                       <Link href="/stories">Browse All Stories</Link>
                     </Button>
@@ -515,23 +513,23 @@ export default function Dashboard() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Learning Streak */}
-            <Card className="border-[#e5e5e5] bg-white">
+            <Card className="border">
               <CardHeader>
-                <CardTitle className="text-[#1a1a1a] flex items-center gap-2">
+                <CardTitle className="text-foreground flex items-center gap-2">
                   <Flame className="w-5 h-5 text-orange-500" />
                   Learning Streak
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-[#1a1a1a] mb-2">
+                  <div className="text-4xl font-bold text-foreground mb-2">
                     {userProfile.progress.streakDays}
                   </div>
-                  <p className="text-[#888] mb-4">
+                  <p className="text-muted-foreground mb-4">
                     {userProfile.progress.streakDays === 1 ? 'day' : 'days'} in a row
                   </p>
                   {userProfile.progress.streakDays > 0 && (
-                    <p className="text-sm text-green-600 font-medium">
+                    <p className="text-sm text-green-600 dark:text-green-400 font-medium">
                       Keep it up! 🔥
                     </p>
                   )}
@@ -540,26 +538,26 @@ export default function Dashboard() {
             </Card>
 
             {/* Progress Summary */}
-            <Card className="border-[#e5e5e5] bg-white">
+            <Card className="border">
               <CardHeader>
-                <CardTitle className="text-[#1a1a1a]">Progress Summary</CardTitle>
+                <CardTitle className="text-foreground">Progress Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#888]">Scenes Completed</span>
-                  <span className="font-semibold text-[#1a1a1a]">
+                  <span className="text-sm text-muted-foreground">Scenes Completed</span>
+                  <span className="font-semibold text-foreground">
                     {userProfile.progress.scenesCompleted.length}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#888]">Vocabulary Size</span>
-                  <span className="font-semibold text-[#1a1a1a]">
+                  <span className="text-sm text-muted-foreground">Vocabulary Size</span>
+                  <span className="font-semibold text-foreground">
                     {userProfile.vocabulary.length}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#888]">Account Age</span>
-                  <span className="font-semibold text-[#1a1a1a]">
+                  <span className="text-sm text-muted-foreground">Account Age</span>
+                  <span className="font-semibold text-foreground">
                     {Math.ceil((Date.now() - new Date(userProfile.createdAt).getTime()) / (1000 * 60 * 60 * 24))} days
                   </span>
                 </div>
@@ -567,9 +565,9 @@ export default function Dashboard() {
             </Card>
 
             {/* Language Info */}
-            <Card className="border-[#e5e5e5] bg-white">
+            <Card className="border">
               <CardHeader>
-                <CardTitle className="text-[#1a1a1a] flex items-center gap-2">
+                <CardTitle className="text-foreground flex items-center gap-2">
                   <Globe className="w-5 h-5 text-blue-500" />
                   Languages
                 </CardTitle>
@@ -577,14 +575,14 @@ export default function Dashboard() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-[#888]">Native</span>
-                    <Badge variant="outline" className="bg-green-50 border-green-200 text-green-700">
+                    <span className="text-sm text-muted-foreground">Native</span>
+                    <Badge variant="outline" className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700 text-green-700 dark:text-green-300">
                       {userProfile.nativeLanguage.toUpperCase()}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-[#888]">Learning</span>
-                    <Badge variant="outline" className="bg-blue-50 border-blue-200 text-blue-700">
+                    <span className="text-sm text-muted-foreground">Learning</span>
+                    <Badge variant="outline" className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300">
                       {userProfile.targetLanguage.toUpperCase()}
                     </Badge>
                   </div>
