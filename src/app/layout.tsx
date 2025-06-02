@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SessionProvider } from "@/lib/auth-client";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { UserProfileProvider } from "@/contexts/UserProfileContext";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
@@ -29,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-gray-950 transition-colors duration-300 mt-16`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#fafafa] dark:bg-[#0a0a0a] text-[#1a1a1a] dark:text-[#fafafa] transition-colors duration-300`}
       >
         <ThemeProvider
           attribute="class"
@@ -38,9 +39,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SessionProvider>
-            <Navbar />
-            {children}
-            <Footer />
+            <UserProfileProvider>
+              <Navbar />
+              {children}
+              <Footer />
+            </UserProfileProvider>
           </SessionProvider>
         </ThemeProvider>
       </body>

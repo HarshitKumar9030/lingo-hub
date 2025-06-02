@@ -31,10 +31,8 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-gray-200/50 dark:border-gray-800/50 bg-white/50 dark:bg-gray-950/50 backdrop-blur-xl">
-      <div className="absolute inset-0 bg-gradient-to-t from-gray-50/20 to-transparent dark:from-gray-900/20" />
-      
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="relative border-t border-[#e5e5e5] dark:border-[#333] bg-white dark:bg-[#1a1a1a]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -42,12 +40,11 @@ export function Footer() {
           transition={{ duration: 0.6 }}
           className="py-12"
         >
-          <div className="flex flex-col md:flex-row items-center justify-between space-y-8 md:space-y-0">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+          <div className="flex flex-col md:flex-row items-center justify-between space-y-8 md:space-y-0">            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-[#1a1a1a] dark:bg-[#e5e5e5] rounded-lg flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white dark:text-[#1a1a1a]" />
               </div>
-              <span className="text-xl font-semibold text-gray-900 dark:text-white">
+              <span className="text-xl font-semibold text-[#1a1a1a] dark:text-[#e5e5e5]">
                 LingoHub
               </span>
             </div>
@@ -57,7 +54,7 @@ export function Footer() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors duration-200"
+                  className="text-sm text-[#888] hover:text-[#1a1a1a] dark:hover:text-[#e5e5e5] transition-colors duration-200"
                 >
                   {link.name}
                 </Link>
@@ -74,22 +71,20 @@ export function Footer() {
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  className="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors duration-200"
+                  className="p-2 text-[#888] hover:text-[#1a1a1a] dark:hover:text-[#e5e5e5] transition-colors duration-200"
                 >
                   <social.icon className="w-5 h-5" />
                   <span className="sr-only">{social.name}</span>
                 </motion.a>
               ))}
             </div>
-          </div>
-
-          <div className="mt-8 pt-6 border-t border-gray-200/50 dark:border-gray-800/50">
+          </div>          <div className="mt-8 pt-6 border-t border-[#e5e5e5] dark:border-[#333]">
             <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-[#888]">
                 © 2025 LingoHub. All rights reserved.
               </p>
               
-              <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center space-x-2 text-sm text-[#888]">
                 <span>Made with</span>
                 <Heart className="w-4 h-4 text-red-500 fill-current" />
                 <span>by</span>
@@ -97,7 +92,7 @@ export function Footer() {
                   href="https://github.com/harshitkumar9030" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200"
+                  className="text-[#1a1a1a] hover:text-[#888] dark:text-[#e5e5e5] dark:hover:text-[#888] transition-colors duration-200"
                 >
                   Harshit Kumar
                 </a>

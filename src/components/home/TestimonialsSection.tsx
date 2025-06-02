@@ -52,14 +52,13 @@ export function TestimonialsSection() {
     }
   };
 
-  return (
-    <section className="relative py-32 overflow-hidden">
+  return (    <section className="relative py-32 overflow-hidden bg-[#fafafa] dark:bg-[#0a0a0a]">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white dark:from-gray-900/30 dark:to-gray-950" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#fafafa]/50 to-white dark:from-[#0a0a0a]/50 dark:to-[#111]" />
       
       {/* Grid Pattern */}
       <div className="absolute inset-0 opacity-20 dark:opacity-10">
-        <div className="h-full w-full bg-[linear-gradient(to_right,theme(colors.gray.200)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.gray.200)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,theme(colors.gray.800)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.gray.800)_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+        <div className="h-full w-full bg-[linear-gradient(to_right,#e5e5e5_1px,transparent_1px),linear-gradient(to_bottom,#e5e5e5_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1a1a1a_1px,transparent_1px),linear-gradient(to_bottom,#1a1a1a_1px,transparent_1px)] bg-[size:4rem_4rem]" />
       </div>
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -70,14 +69,13 @@ export function TestimonialsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="text-center mb-20"
-        >
-          <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 dark:text-white mb-4 tracking-tight">
+        >          <h2 className="text-3xl md:text-4xl font-semibold text-[#1a1a1a] dark:text-[#fafafa] mb-4 tracking-tight">
             Loved by{' '}
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
               learners everywhere
             </span>
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-[#888] dark:text-[#888] max-w-2xl mx-auto">
             See what people are saying about their language learning journey
           </p>
         </motion.div>
@@ -98,7 +96,7 @@ export function TestimonialsSection() {
             >
               <div className="relative h-full">
                 {/* Glassmorphic Card */}
-                <div className="relative h-full p-8 rounded-3xl backdrop-blur-xl bg-white/60 dark:bg-gray-900/40 border border-gray-200/50 dark:border-gray-700/30 shadow-xl shadow-gray-900/5 dark:shadow-black/20 transition-all duration-500 group-hover:bg-white/80 dark:group-hover:bg-gray-900/60 group-hover:border-gray-300/50 dark:group-hover:border-gray-600/40 group-hover:shadow-2xl group-hover:shadow-gray-900/10 dark:group-hover:shadow-black/30">
+                <div className="relative h-full p-8 rounded-xl bg-white/80 dark:bg-[#111]/80 border border-[#e5e5e5]/50 dark:border-[#1a1a1a]/50 shadow-lg transition-all duration-500 group-hover:bg-white dark:group-hover:bg-[#111] group-hover:border-[#e5e5e5] dark:group-hover:border-[#1a1a1a] group-hover:shadow-xl">
                   
                   {/* Quote Icon */}
                   <div className="flex items-start justify-between mb-6">

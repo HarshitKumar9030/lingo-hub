@@ -71,7 +71,7 @@ export function FeaturesSection() {
   };
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <section className="py-20 bg-white dark:bg-[#111] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}        <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -79,15 +79,13 @@ export function FeaturesSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+        >          <h2 className="text-3xl md:text-5xl font-bold text-[#1a1a1a] dark:text-[#fafafa] mb-6">
             Why{' '}
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
               LingoHub
             </span>
             {' '}works
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+          </h2>          <p className="text-xl text-[#888] dark:text-[#888] max-w-3xl mx-auto">
             Experience language learning that adapts to you, not the other way around
           </p>
         </motion.div>
@@ -106,18 +104,17 @@ export function FeaturesSection() {
               variants={itemVariants}
               whileHover={{ y: -5 }}
               className="group"
-            >
-              <div className="h-full p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg border border-gray-200 dark:border-gray-700 transition-all duration-300">
+            >              <div className="h-full p-8 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm hover:shadow-md border border-[#e5e5e5] dark:border-[#1a1a1a] transition-all duration-300">
                 {/* Icon */}
                 <div className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r ${feature.gradient} rounded-xl mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   <feature.icon className="w-6 h-6 text-white" />
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                <h3 className="text-xl font-semibold text-[#1a1a1a] dark:text-[#fafafa] mb-4">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-[#888] dark:text-[#888] leading-relaxed">
                   {feature.description}
                 </p>
               </div>

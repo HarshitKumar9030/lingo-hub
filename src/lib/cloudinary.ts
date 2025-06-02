@@ -34,12 +34,10 @@ export const uploadImage = async (
 ): Promise<CloudinaryUploadResult> => {
   const defaultOptions = {
     folder: 'lingo-hub',
-    quality: 'auto' as const,
-    format: 'auto' as const,
     transformation: [
       { width: 400, height: 400, crop: 'fill', gravity: 'face' },
       { quality: 'auto' },
-      { format: 'auto' }
+      { fetch_format: 'auto' }
     ]
   };
 
@@ -77,8 +75,8 @@ export const getOptimizedImageUrl = (
   return cloudinary.url(publicId, {
     transformation: [
       { width, height, crop: 'fill', gravity: 'face' },
-      { quality },
-      { fetch_format: format }
+      { quality: quality === 'auto' ? 'auto' : quality },
+      { fetch_format: format === 'auto' ? 'auto' : format }
     ]
   });
 };
