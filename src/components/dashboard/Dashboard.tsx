@@ -30,6 +30,8 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StoryModal } from '@/components/story/StoryModal';
+import { IStory } from '@/lib/models/Story';
 
 interface UserProfile {
   name: string;
@@ -70,10 +72,12 @@ export default function Dashboard() {
   const { data: session } = useSession();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [stories, setStories] = useState<Story[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+  const [loading, setLoading] = useState(true);  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
-  const [isChangingLanguage, setIsChangingLanguage] = useState(false);
+  const [isChangingLanguage, setIsChangingLanguage] = useState(false);  const [selectedStory, setSelectedStory] = useState<IStory | null>(null);
+  const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
+  const [testingAI, setTestingAI] = useState(false);
+  const [generatingStories, setGeneratingStories] = useState(false);
 
   // Available languages for learning
   const availableLanguages = [
@@ -89,23 +93,25 @@ export default function Dashboard() {
     { code: 'ar', name: 'Arabic', emoji: '🇸🇦', flag: 'SA' },
     { code: 'hi', name: 'Hindi', emoji: '🇮🇳', flag: 'IN' },
     { code: 'nl', name: 'Dutch', emoji: '🇳🇱', flag: 'NL' },
-  ];
-  useEffect(() => {
+  ];  useEffect(() => {
     async function fetchData() {
       try {
         // Fetch user profile
         const profileResponse = await fetch('/api/user/profile');
+        let profile: UserProfile | null = null;
         if (profileResponse.ok) {
-          const profile = await profileResponse.json();
+          profile = await profileResponse.json();
           setUserProfile(profile);
           setSelectedLanguage(profile.targetLanguage || 'de');
         }
-
-        // Fetch recommended stories
-        const storiesResponse = await fetch('/api/stories?limit=6');
+        // Fetch recommended stories based on user's current level and target language
+        const storiesResponse = await fetch(`/api/stories?limit=8&difficulty=${profile?.progress?.currentLevel || 1}&language=${profile?.targetLanguage || 'de'}`);
         if (storiesResponse.ok) {
           const storiesData = await storiesResponse.json();
           setStories(storiesData.stories || []);
+        } else {
+          // If no stories exist, generate some default ones
+          await generateDefaultStories(profile?.targetLanguage || 'de', profile?.progress?.currentLevel || 1);
         }
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -117,7 +123,7 @@ export default function Dashboard() {
     if (session?.user) {
       fetchData();
     }
-  }, [session]);
+  }, [session, userProfile?.progress?.currentLevel, userProfile?.targetLanguage]);
 
   // Close language selector when clicking outside
   useEffect(() => {
@@ -154,15 +160,14 @@ export default function Dashboard() {
       </div>
     );
   }
-
   const getDifficultyColor = (difficulty: number) => {
     switch (difficulty) {
-      case 1: return 'bg-green-100 text-green-800 border-green-200';
-      case 2: return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 3: return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 4: return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 5: return 'bg-red-100 text-red-800 border-red-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 1: return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800';
+      case 2: return 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800';
+      case 3: return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800';
+      case 4: return 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800';
+      case 5: return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-700';
     }
   };
 
@@ -225,10 +230,153 @@ export default function Dashboard() {
       setShowLanguageSelector(false);
     }
   };
-
   const getCurrentLanguage = () => {
     return availableLanguages.find(lang => lang.code === selectedLanguage) || 
            availableLanguages.find(lang => lang.code === 'de');
+  };
+
+  const handleOpenStory = async (storyId: string) => {
+    try {
+      const response = await fetch('/api/stories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ storyId }),
+      });
+
+      if (response.ok) {
+        const { story } = await response.json();
+        setSelectedStory(story);
+        setIsStoryModalOpen(true);
+      } else {
+        console.error('Failed to fetch story details');
+      }
+    } catch (error) {
+      console.error('Error opening story:', error);
+    }
+  };
+
+  const handleStoryComplete = (xpEarned: number, wordsLearned: string[]) => {
+    setIsStoryModalOpen(false);
+    setSelectedStory(null);
+    
+    // Update user profile with new XP and words
+    if (userProfile) {
+      setUserProfile(prev => ({
+        ...prev!,
+        progress: {
+          ...prev!.progress,
+          totalQuizScore: prev!.progress.totalQuizScore + xpEarned,
+          wordsLearned: prev!.progress.wordsLearned + wordsLearned.length
+        }
+      }));
+    }
+    
+    // Show success message or refresh data
+    console.log(`Story completed! Earned ${xpEarned} XP and learned ${wordsLearned.length} words`);
+  };
+
+  const generateRandomStory = async () => {
+    if (!userProfile) return;
+    
+    setTestingAI(true);
+    try {
+      const scenarios = ['cafe', 'airport', 'supermarket', 'hotel', 'restaurant', 'shopping'];
+      const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+      const userLevel = userProfile.progress.currentLevel;
+      const difficulty = Math.min(5, Math.max(1, userLevel + Math.floor(Math.random() * 2 - 1)));
+      
+      const response = await fetch('/api/stories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          scenario: randomScenario,
+          difficulty: difficulty,
+          targetLanguage: userProfile.targetLanguage,
+          nativeLanguage: userProfile.nativeLanguage
+        }),
+      });
+
+      if (response.ok) {
+        const { story } = await response.json();
+        // Add the new story to the stories list
+        setStories(prev => [story, ...prev.slice(0, 5)]); // Keep only 6 stories
+        // Auto-open the new story
+        setSelectedStory(story);
+        setIsStoryModalOpen(true);
+      } else {
+        const errorData = await response.json();
+        alert(`❌ Failed to generate story: ${errorData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error generating story:', error);
+      alert(`❌ Network Error: Failed to generate story. Please check your connection.`);
+    } finally {
+      setTestingAI(false);
+    }
+  };
+
+  const testAIGeneration = async () => {
+    setTestingAI(true);
+    try {
+      const response = await fetch('/api/ai/test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          targetLanguage: userProfile?.targetLanguage || 'de',
+          nativeLanguage: userProfile?.nativeLanguage || 'en',
+          scenario: 'cafe'
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        alert(`✅ AI Generation Test Successful!\n\nGenerated: "${result.testData.title}"\nScenes: ${result.testData.scenesCount}\nQuiz Questions: ${result.testData.quizCount}\nEstimated Time: ${result.testData.estimatedTime} minutes`);
+      } else {
+        alert(`❌ AI Generation Test Failed\n\nError: ${result.error}\n\nTroubleshooting:\n- API Key Set: ${result.troubleshooting?.apiKeySet ? 'Yes' : 'No'}\n- API Key Length: ${result.troubleshooting?.apiKeyLength || 0} chars\n\nPlease check your .env.local file and ensure GEMINI_API_KEY is properly set.`);
+      }
+    } catch (error) {
+      alert(`❌ Network Error\n\nFailed to test AI generation: ${error}\n\nPlease check your internet connection and server status.`);
+    } finally {
+      setTestingAI(false);
+    }
+  };
+
+  const generateDefaultStories = async (language: string, currentLevel: number) => {
+    try {
+      const scenarios = ['cafe', 'airport', 'restaurant', 'hotel'];
+      const responses = await Promise.all(
+        scenarios.map(scenario =>
+          fetch('/api/stories', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              scenario,
+              difficulty: currentLevel,
+              language
+            })
+          })
+        )
+      );
+
+      const generatedStories = [];
+      for (const response of responses) {
+        if (response.ok) {
+          const { story } = await response.json();
+          generatedStories.push(story);
+        }
+      }
+
+      setStories(generatedStories);
+    } catch (error) {
+      console.error('Error generating default stories:', error);
+    }
   };
 
   const vocabularyNeedingReview = userProfile.vocabulary.filter(v => v.needsReview).length;
@@ -446,54 +594,67 @@ export default function Dashboard() {
             </Card>
 
             {/* Recommended Stories */}
-            <Card className="border">
-              <CardHeader className="flex flex-row items-center justify-between">
+            <Card className="border">              <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                   <CardTitle className="text-foreground">Recommended Stories</CardTitle>
                   <CardDescription className="text-muted-foreground">
                     Perfect for your current level
                   </CardDescription>
                 </div>
-                <Button asChild variant="ghost" size="sm">
-                  <Link href="/stories" className="flex items-center gap-1">
-                    View All
-                    <ChevronRight className="w-4 h-4" />
-                  </Link>
-                </Button>
-              </CardHeader>
-              <CardContent>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={testAIGeneration}
+                    disabled={testingAI}
+                    className="flex items-center gap-1"
+                  >
+                    {testingAI ? (
+                      <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Brain className="w-4 h-4" />
+                    )}
+                    Test AI
+                  </Button>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link href="/stories" className="flex items-center gap-1">
+                      View All
+                      <ChevronRight className="w-4 h-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </CardHeader>              <CardContent>
                 {stories.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {stories.slice(0, 4).map((story) => (
                       <div
                         key={story._id}
                         className="p-4 border border-border rounded-lg hover:shadow-md dark:hover:shadow-lg transition-shadow cursor-pointer group"
+                        onClick={() => handleOpenStory(story._id)}
                       >
-                        <Link href={`/stories/${story._id}`}>
-                          <div className="flex items-start gap-3">
-                            <span className="text-2xl">{story.emoji}</span>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="font-semibold text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
-                                {story.title}
-                              </h3>
-                              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                                {story.description}
-                              </p>
-                              <div className="flex items-center gap-2 mt-3">
-                                <Badge 
-                                  variant="outline" 
-                                  className={getDifficultyColor(story.difficulty)}
-                                >
-                                  {getDifficultyLabel(story.difficulty)}
-                                </Badge>
-                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <Clock className="w-3 h-3" />
-                                  {story.estimatedTime}m
-                                </div>
+                        <div className="flex items-start gap-3">
+                          <span className="text-2xl">{story.emoji}</span>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
+                              {story.title}
+                            </h3>
+                            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                              {story.description}
+                            </p>
+                            <div className="flex items-center gap-2 mt-3">
+                              <Badge 
+                                variant="outline" 
+                                className={getDifficultyColor(story.difficulty)}
+                              >
+                                {getDifficultyLabel(story.difficulty)}
+                              </Badge>
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <Clock className="w-3 h-3" />
+                                {story.estimatedTime}m
                               </div>
                             </div>
                           </div>
-                        </Link>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -505,8 +666,7 @@ export default function Dashboard() {
                       <Link href="/stories">Browse All Stories</Link>
                     </Button>
                   </div>
-                )}
-              </CardContent>
+                )}              </CardContent>
             </Card>
           </div>
 
@@ -588,10 +748,22 @@ export default function Dashboard() {
                   </div>
                 </div>
               </CardContent>
-            </Card>
-          </div>
+            </Card>          </div>
         </div>
       </div>
+
+      {/* Story Modal */}
+      {selectedStory && (
+        <StoryModal
+          story={selectedStory}
+          isOpen={isStoryModalOpen}
+          onClose={() => {
+            setIsStoryModalOpen(false);
+            setSelectedStory(null);
+          }}
+          onComplete={handleStoryComplete}
+        />
+      )}
     </div>
   );
 }
